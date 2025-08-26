@@ -137,6 +137,7 @@ const char* B64decode = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz012
  *
  * @return The number of days until the next Christmas.
  */
+
 int daysUntilChristmas() {
     time_t rawtime;
     struct tm *info;
@@ -631,6 +632,7 @@ int main(int argc, char *argv[]) {
         sendUdp();
     
         do {
+			// See new code at lines 140=180 and 257-259
 		/* TO FIX - 
             currentTimeDate = time(NULL);
             strDaysRemaining = itoa(int(dateDec25) - int(currentTimeDate) - 1);
@@ -1796,6 +1798,7 @@ void dataInit() {
        }
    }
 }
+
 
 
 
