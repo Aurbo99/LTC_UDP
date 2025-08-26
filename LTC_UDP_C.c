@@ -128,6 +128,55 @@ double lastmark, tdelayms;
 const double PI = 3.1415926535897932;
 const char* B64decode = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
+/**
+ * @brief Calculates the number of days until the next Christmas.
+ *
+ * This function determines the number of days remaining until December 25th.
+ * If the current date is on or after December 25th of the current year,
+ * it calculates the days until Christmas of the following year.
+ *
+ * @return The number of days until the next Christmas.
+ */
+int daysUntilChristmas() {
+    time_t rawtime;
+    struct tm *info;
+    struct tm christmas_date;
+    double seconds_diff;
+    int days_left;
+
+    // Get current time
+    time(&rawtime);
+    info = localtime(&rawtime);
+
+    // Initialize Christmas date structure
+    christmas_date = *info; // Copy current date information
+    christmas_date.tm_mon = 11; // December (0-indexed)
+    christmas_date.tm_mday = 25; // 25th
+
+    // If Christmas has already passed this year, set target to next year
+    if (info->tm_mon > 11 || (info->tm_mon == 11 && info->tm_mday > 25)) {
+        christmas_date.tm_year++;
+    }
+
+    // Normalize the tm structure to ensure correct mktime conversion
+    christmas_date.tm_hour = 0;
+    christmas_date.tm_min = 0;
+    christmas_date.tm_sec = 0;
+    christmas_date.tm_isdst = -1; // Let mktime determine DST
+
+    // Convert tm structures to time_t (seconds since epoch)
+    time_t current_time_t = mktime(info);
+    time_t christmas_time_t = mktime(&christmas_date);
+
+    // Calculate difference in seconds
+    seconds_diff = difftime(christmas_time_t, current_time_t);
+
+    // Convert seconds to days
+    days_left = (int)(seconds_diff / (60 * 60 * 24));
+
+    return days_left;
+}
+
 
 //##############################################################################
 //SUBS
@@ -203,6 +252,10 @@ void getDates() {
 struct sockaddr_in sa;
 
 int main(int argc, char *argv[]) {
+
+	int days = daysUntilChristmas();
+    printf("There are %d days until Christmas.\n", days);
+    return 0;
 
     int delay = 50;
     double starttime = time(NULL);
@@ -1743,6 +1796,7 @@ void dataInit() {
        }
    }
 }
+
 
 
 
