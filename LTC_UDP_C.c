@@ -38,7 +38,7 @@
 #include <winsock2.h>
 #include <time.h>
 #include <unistd.h> // sleep()
-#include <ctype.h> // toupper()
+#include <ctype.h>  // toupper()
 #include "LTC_UDP.h"
 
 // Constants for Winsock initialization
@@ -78,8 +78,8 @@ char inputfile[100], scriptfilename[100], file_id[100];
 // ----------------
 // Com Port access
 // ----------------
-FILE *comport;
-char sComOpenCmd[100], theport[100], theport1[100], strComPort[100];
+//FILE *comport;
+//char sComOpenCmd[100], theport[100], theport1[100], strComPort[100];
 
 // ---------------------
 // Command Line Parsing
@@ -128,15 +128,6 @@ double lastmark, tdelayms;
 const double PI = 3.1415926535897932;
 const char* B64decode = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-/**
- * @brief Calculates the number of days until the next Christmas.
- *
- * This function determines the number of days remaining until December 25th.
- * If the current date is on or after December 25th of the current year,
- * it calculates the days until Christmas of the following year.
- *
- * @return The number of days until the next Christmas.
- */
 
 int daysUntilChristmas() {
     time_t rawtime;
@@ -177,6 +168,7 @@ int daysUntilChristmas() {
 
     return days_left;
 }
+
 
 
 //##############################################################################
@@ -316,8 +308,8 @@ int main(int argc, char *argv[]) {
     } else {
         printf("TRIKSC.DAT FOUND\n");
 
-        fgets(strComPort, sizeof(strComPort), parameters);
-        strComPort[strcspn(strComPort, "\n")] = 0; // Remove newline
+        //fgets(strComPort, sizeof(strComPort), parameters);
+        //strComPort[strcspn(strComPort, "\n")] = 0; // Remove newline
         strDelay[256];
 
         fgets(strDelay, sizeof(strDelay), parameters);
@@ -632,7 +624,6 @@ int main(int argc, char *argv[]) {
         sendUdp();
     
         do {
-			// See new code at lines 140=180 and 257-259
 		/* TO FIX - 
             currentTimeDate = time(NULL);
             strDaysRemaining = itoa(int(dateDec25) - int(currentTimeDate) - 1);
@@ -1038,7 +1029,7 @@ if (strcmp(cmd, "#RL") == 0) {
         // Escape encoding
         content += escapeEncode(p4byte2);
     }
-    put(comport, "", content);
+    //put(comport, "", content);
     sendUdp();
 
     tdelayms = (time(NULL) - lastmark) * 1000;
@@ -1127,7 +1118,7 @@ if (strcmp(cmd, "#RL") == 0) {
         content += escapeEncode(p4byte2);
     }
 
-    put(comport, "", content);
+    //put(comport, "", content);
     sendUdp();
 
     tdelayms = (time(NULL) - lastmark) * 1000;
@@ -1169,7 +1160,7 @@ if (strcmp(cmd, "#RL") == 0) {
              strcat(content, escapeEncode(byte1));
          }
      }
-     put(comport, content);
+     //put(comport, content);
      sendUdp();
      tdelayms = (time(NULL) - lastmark) * 1000;
      delay = vedgedelay - tdelayms;
@@ -1207,7 +1198,7 @@ if (strcmp(cmd, "#RL") == 0) {
              strcat(content, escapeEncode(byte1));
          }
      }
-     put(comport, content);
+     //put(comport, content);
      sendUdp();
      tdelayms = (time(NULL) - lastmark) * 1000;
      delay = vedgedelay - tdelayms;
@@ -1253,7 +1244,7 @@ if (strcmp(cmd, "#RL") == 0) {
              strcat(content, escapeEncode(byte1));
          }
      }
-     put(comport, content);
+     //put(comport, content);
      sendUdp();
      tdelayms = (time(NULL) - lastmark) * 1000;
      delay = framedelay - tdelayms;
@@ -1306,7 +1297,8 @@ if (strcmp(cmd, "#RL") == 0) {
          strcat(content, (char[]){byte1, '\0'});
      }
      strcat(content, (char[120]){0});
-     put(outfile, content);
+     //put(outfile, content);
+	 sendUdp();
  } else {
      printf("COMMAND NOT RECOGNISED: '%s'", cmd);
      usleep(1);
@@ -1378,13 +1370,14 @@ void ByeBye(){
 }
 
 void no_params(){
-    fclose(comport);
+   // fclose(comport);
 
     if (sock) {
         closesocket(sock);
     }
     exit(0);
 }
+
 //#########################################################################
 // SETTING UP TRIKSC.DAT
 //#########################################################################
@@ -1393,12 +1386,13 @@ void setup() {
     system("cls");
     printf("##################################\n");
     printf("TRIKS-C Setup\n");
-    printf("TESTING FOR COMPORTS (COM1:-COM40)\n");
+    //printf("TESTING FOR COMPORTS (COM1:-COM40)\n");
     printf("##################################\n");
-    testPorts();
+    //testPorts();
     printf("\n");
 
 getPort:
+/*
     char theport[20];
     printf("SETUP: Enter the COM port you wish to use: eg 'COM1:' : ");
     scanf("%s", theport);
@@ -1420,13 +1414,13 @@ getPort:
         fclose(fp);
         remove("triksc.dat");
         FILE *paramFile = fopen("triksc.dat", "w");
-        
+*/         
         if (paramFile == NULL) {
             printf("TRIKSC.DAT cannot be opened\n");
             usleep(1000);
             exit(1);
         }
-        
+       
         int panelCount, framedelay, hedgedelay, vedgedelay, rotdelay;
         printf("How many panels are on display (1-4): ");
         scanf("%d", &panelCount);
@@ -1439,7 +1433,7 @@ getPort:
         printf("Now enter the rotational delay (normal = 0): ");
         scanf("%d", &rotdelay);
 
-        fprintf(paramFile, "%s\n", theport);
+        // fprintf(paramFile, "%s\n", theport);
         fprintf(paramFile, "%d\n", panelCount);
         fprintf(paramFile, "%d\n", framedelay);
         fprintf(paramFile, "%d\n", hedgedelay);
@@ -1602,6 +1596,7 @@ void handleRotation(int direction) {
     }
     #endif
 }
+
 #ifdef DONTUSE
 // FRAME DIAGNOSTIC
 if (diagFlag == 1) {
@@ -1690,7 +1685,8 @@ for (int byteIdx = 0; byteIdx <= 95; byteIdx++) {
     byte1 = panel4rot[byteIdx];
     strcat(content, escapeEncode(byte1));
 }
-put(comport, content);
+// put(comport, content);
+sendUdp();
 
 tdelayms = (time(NULL) - lastmark) * 1000;
 delay = rotdelay - tdelayms;
@@ -1741,20 +1737,6 @@ void printCmdHelp() {
     printf("            #RXCnnnn = Rotate Center X co-ord\n");
     printf("            #RYCnnnn = Rotate Center Y co-ord\n");
     printf("            \n");
-    // printf("            #Wxx     = Write Triks SD data (file xx.dat)\n");
-    // printf("            #TSDxx   = Order TRIKS SD to transmit file xx.*\n");
-    printf("\n");
-    printf("            #STA     = Send TRIKS-C to stand alone mode\n");
-    printf("                       (until next command received)\n");
-    printf("\n");
-    printf("            #CALxxx  = Countdown timer (2 panels) xxx secs\n");
-    printf("            #CLKxxx  = Clock (1 Panel) for xxx secs\n");
-    printf("\n");
-    printf(" PIX-C commands:\n");
-    printf("            #P_PROGRAM = Assign PIXC board to a panel\n");
-    printf("            #P_FSpff   = Display frame ff on panel p\n");
-    printf("            #P_FWpff   = Store into frame ff on panel p\n");
-    printf("\n");
     printf(" (OR LTC [filename] with no params to run a script file \n");
     printf("  with 1 command per line)\n");
     printf("\n");
@@ -1762,7 +1744,8 @@ void printCmdHelp() {
     printf("\n");
     getc(stdin); // Wait for user input
 }
-void testPorts() {
+
+/* void testPorts() {
 #ifdef DONTUSE
      int idx;
      char strPortParam[50];
@@ -1778,7 +1761,9 @@ void testPorts() {
          }
      }
 #endif
- }
+ } */
+
+
 void dataInit() {
    for (int byteCount = 0; byteCount < 96; byteCount++) {
        panel1[byteCount] = frame01[byteCount];
@@ -1798,8 +1783,5 @@ void dataInit() {
        }
    }
 }
-
-
-
 
 
